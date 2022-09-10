@@ -25,10 +25,10 @@ class _UserTransactionState extends State<UserTransaction> {
     );
   }
 
-  void _addTransaction(String titleInput, String amountInput) {
+  void _addTransaction(String titleInput, double amountInput) {
     setState(() {
       transactions.add(Transaction(
-          id: "tNew", title: titleInput, amount: 22.3, date: DateTime.now()));
+          id: "tNew", title: titleInput, amount: amountInput, date: DateTime.now()));
     });
   }
 }
