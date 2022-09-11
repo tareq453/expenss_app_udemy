@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'widget/user_transaction.dart';
+import 'models/transaction.dart';
+import 'widget/form_input.dart';
+import 'widget/transaction_list.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,12 +33,42 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
- 
+class MyHomePage extends StatefulWidget {
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+ final List<Transaction> transactions = [
+    Transaction(
+        id: "t1", title: "My Shoes", amount: 25.4, date: DateTime.now()),
+    Transaction(id: "t2", title: "My Food", amount: 45.3, date: DateTime.now())
+  ];
+
+  
+ void _addTransaction(String titleInput, double amountInput) {
+  
+    setState(() {
+      transactions.add(Transaction(
+          id: "tNew", title: titleInput, amount: amountInput, date: DateTime.now()));
+    });
+  }
+  
+  void _startNewTransaction(BuildContext context){
+    showModalBottomSheet(context: context, builder: ((_) {
+            return FormInput(_addTransaction);
+    }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Expense App")),
+      appBar: AppBar(title: Text("Expense App"),
+      actions: [
+        IconButton(onPressed: () {
+          _startNewTransaction(context);
+        }, icon: Icon(Icons.add))
+      ],),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,12 +80,14 @@ class MyHomePage extends StatelessWidget {
                 elevation: 10,
               ),
             ),
-            UserTransaction()
+            TransactionList(transactions)
           ],
         ),
       ),
+    floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton(onPressed: (() {
+        _startNewTransaction(context);
+      }), child: Icon(Icons.add),),
     );
   }
 }
-
-

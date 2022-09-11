@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 
-class FormInput extends StatelessWidget {
-  final titleController = TextEditingController();
-  final amountController = TextEditingController();
+class FormInput extends StatefulWidget {
   final Function(String, double) submitHandler;
   FormInput(this.submitHandler);
+
+  @override
+  State<FormInput> createState() => _FormInputState();
+}
+
+class _FormInputState extends State<FormInput> {
+  final titleController = TextEditingController();
+
+  final amountController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +49,8 @@ class FormInput extends StatelessWidget {
       return;
     }
 
-    submitHandler(titleText, amount);
+    widget.submitHandler(titleText, amount);
+
+    Navigator.of(context).pop();
   }
 }
