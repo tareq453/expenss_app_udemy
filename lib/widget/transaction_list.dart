@@ -12,7 +12,11 @@ class TransactionList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 300,
-      child: ListView.builder(
+      child: _transactions.isEmpty ? Column(children: [
+        Text("No Transaction added yet"),
+        SizedBox(height: 20,),
+        Container(height: 200, child: Image.asset("assets/images/waiting.png",fit: BoxFit.cover,))
+      ],): ListView.builder(
         itemBuilder: (context, index) {
           return TransactionItem(_transactions[index]);
         },
