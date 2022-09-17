@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import '../models/transaction.dart';
 
 class TransactionList extends StatelessWidget {
+  final Function(Transaction) deleteHandler;
   final List<Transaction> _transactions;
 
-  TransactionList(this._transactions);
+  TransactionList(this._transactions,this.deleteHandler);
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class TransactionList extends StatelessWidget {
         Container(height: 200, child: Image.asset("assets/images/waiting.png",fit: BoxFit.cover,))
       ],): ListView.builder(
         itemBuilder: (context, index) {
-          return TransactionItem(_transactions[index]);
+          return TransactionItem(_transactions[index],deleteHandler);
         },
         itemCount: _transactions.length,
       ),

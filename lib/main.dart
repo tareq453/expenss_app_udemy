@@ -34,7 +34,8 @@ class MyApp extends StatelessWidget {
               headline6: TextStyle(
                   fontFamily: "OpenSans",
                   fontWeight: FontWeight.bold,
-                  fontSize: 18)),
+                  fontSize: 18),
+                  button: TextStyle(color: Colors.white)),
           appBarTheme: AppBarTheme(
               titleTextStyle: TextStyle(
                   fontFamily: 'OpenSans',
@@ -60,13 +61,13 @@ class _MyHomePageState extends State<MyHomePage> {
     }).toList();
   }
 
-  void _addTransaction(String titleInput, double amountInput) {
+  void _addTransaction(String titleInput, double amountInput,DateTime selectedDate) {
     setState(() {
       transactions.add(Transaction(
-          id: "tNew",
+          id: DateTime.now().toString(),
           title: titleInput,
           amount: amountInput,
-          date: DateTime.now()));
+          date: selectedDate));
     });
   }
 
@@ -77,6 +78,17 @@ class _MyHomePageState extends State<MyHomePage> {
         builder: ((_) {
           return FormInput(_addTransaction);
         }));
+  }
+
+  void _deleteTransaction(Transaction transaction){
+    print('transaction $transaction');
+    if(transactions.contains(transaction)){
+      setState(() {
+        transactions.removeWhere((element) => element.id == transaction.id);
+        // transactions.remove(transaction);
+      });
+    }
+
   }
 
   @override
@@ -95,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: [Chart(_recenctTransaction), TransactionList(transactions)],
+          children: [Chart(_recenctTransaction), TransactionList(transactions,_deleteTransaction)],
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
