@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'models/transaction.dart';
 import 'widget/form_input.dart';
@@ -6,6 +7,9 @@ import 'widget/transaction_list.dart';
 import 'widget/chart.dart';
 
 void main() {
+  // WidgetsFlutterBinding.ensureInitialized();
+  // SystemChrome.setPreferredOrientations(
+  //     [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(const MyApp());
 }
 
@@ -35,7 +39,7 @@ class MyApp extends StatelessWidget {
                   fontFamily: "OpenSans",
                   fontWeight: FontWeight.bold,
                   fontSize: 18),
-                  button: TextStyle(color: Colors.white)),
+              button: TextStyle(color: Colors.white)),
           appBarTheme: AppBarTheme(
               titleTextStyle: TextStyle(
                   fontFamily: 'OpenSans',
@@ -52,18 +56,21 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<Transaction> transactions = [];
+  final List<Transaction> _transactions = [];
+
+  bool _showChart = true;
 
   List<Transaction> get _recenctTransaction {
-    return transactions.where((transaction) {
+    return _transactions.where((transaction) {
       return transaction.date
           .isAfter(DateTime.now().subtract(Duration(days: 7)));
     }).toList();
   }
 
-  void _addTransaction(String titleInput, double amountInput,DateTime selectedDate) {
+  void _addTransaction(
+      String titleInput, double amountInput, DateTime selectedDate) {
     setState(() {
-      transactions.add(Transaction(
+      _transactions.add(Transaction(
           id: DateTime.now().toString(),
           title: titleInput,
           amount: amountInput,
@@ -80,34 +87,53 @@ class _MyHomePageState extends State<MyHomePage> {
         }));
   }
 
-  void _deleteTransaction(Transaction transaction){
+  void _deleteTransaction(Transaction transaction) {
     print('transaction $transaction');
-    if(transactions.contains(transaction)){
+    if (_transactions.contains(transaction)) {
       setState(() {
-        transactions.removeWhere((element) => element.id == transaction.id);
+        _transactions.removeWhere((element) => element.id == transaction.id);
         // transactions.remove(transaction);
       });
     }
-
   }
 
   @override
   Widget build(BuildContext context) {
+    var appBar = AppBar(
+      title: Text("Expense App"),
+      actions: [
+        IconButton(
+            onPressed: () {
+              _startNewTransaction(context);
+            },
+            icon: Icon(Icons.add))
+      ],
+    );
+    var deviceHeight = MediaQuery.of(context).size.height -
+        appBar.preferredSize.height -
+        MediaQuery.of(context).padding.top;
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Expense App"),
-        actions: [
-          IconButton(
-              onPressed: () {
-                _startNewTransaction(context);
-              },
-              icon: Icon(Icons.add))
-        ],
-      ),
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: [Chart(_recenctTransaction), TransactionList(transactions,_deleteTransaction)],
+          children: [
+            Row(children: [
+              Text("Show chart!"),
+              Switch(value: _showChart, onChanged: ((value) {
+                setState(() {
+                  _showChart = !_showChart;
+                });
+              }))
+            ],),
+            _showChart ?
+            Container(
+                height: deviceHeight * 0.3, child: Chart(_recenctTransaction))
+                :
+            Container(
+                height: deviceHeight * 0.5,
+                child: TransactionList(_transactions, _deleteTransaction))
+          ],
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
