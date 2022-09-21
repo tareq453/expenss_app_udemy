@@ -15,7 +15,7 @@ class TransactionList extends StatelessWidget {
         ? LayoutBuilder(builder: ((context, constraints) {
           return Column(
             children: [
-              Container(height: constraints.maxHeight * 0.2, child: FittedBox(child: Text("No Transaction added yet"))),
+              Container(height: constraints.maxHeight * 0.2, child: FittedBox(child: Text("No Transaction added yet",style: TextStyle(color: Colors.black,),))),
               SizedBox(
                 height: constraints.maxHeight * 0.1,
               ),

@@ -12,53 +12,67 @@ class FormInput extends StatefulWidget {
 class _FormInputState extends State<FormInput> {
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
+  
   DateTime _selectedDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(15),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          TextField(
-            decoration: InputDecoration(labelText: "Title"),
-            controller: _titleController,
-            onSubmitted: (value) => _sumbitData(),
+    final _mediaQuery = MediaQuery.of(context);
+    print("form input hey I am building again bottom : ${_mediaQuery.viewInsets.bottom}");
+    
+    return SingleChildScrollView(
+      child: Card(
+        elevation: 5,
+        child: Container(
+          padding: EdgeInsets.only(
+            top: 15,
+            left: 15,
+            right: 15,
+            bottom: _mediaQuery.viewInsets.bottom + 10
           ),
-          TextField(
-            decoration: InputDecoration(labelText: 'Amount'),
-            controller: _amountController,
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
-            onSubmitted: (value) => _sumbitData(),
-          ),
-          Container(
-            height: 70,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(_selectedDate != null
-                      ? 'Picked date ${DateFormat.yMd().format(_selectedDate)}'
-                      : "No Date Choosen!"),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              TextField(
+                decoration: InputDecoration(labelText: "Title"),
+                controller: _titleController,
+                onSubmitted: (value) => _sumbitData(),
+              ),
+              TextField(
+                decoration: InputDecoration(labelText: 'Amount'),
+                controller: _amountController,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                onSubmitted: (value) => _sumbitData(),
+              ),
+              Container(
+                height: 70,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(_selectedDate != null
+                          ? 'Picked date ${DateFormat.yMd().format(_selectedDate)}'
+                          : "No Date Choosen!"),
+                    ),
+                    TextButton(
+                      onPressed: _presentDatePicker,
+                      child: Text(
+                        "Select Date",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    )
+                  ],
                 ),
-                TextButton(
-                  onPressed: _presentDatePicker,
-                  child: Text(
-                    "Select Date",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                )
-              ],
-            ),
+              ),
+              ElevatedButton(
+                onPressed: _sumbitData,
+                child: Text("Add Transaction"),
+                style: ElevatedButton.styleFrom(
+                    primary: Theme.of(context).primaryColor,
+                    onPrimary: Theme.of(context).textTheme.button?.color),
+              )
+            ],
           ),
-          ElevatedButton(
-            onPressed: _sumbitData,
-            child: Text("Add Transaction"),
-            style: ElevatedButton.styleFrom(
-                primary: Theme.of(context).primaryColor,
-                onPrimary: Theme.of(context).textTheme.button?.color),
-          )
-        ],
+        ),
       ),
     );
   }
