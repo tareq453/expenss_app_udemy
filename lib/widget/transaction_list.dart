@@ -13,21 +13,27 @@ class TransactionList extends StatelessWidget {
   Widget build(BuildContext context) {
     return _transactions.isEmpty
         ? LayoutBuilder(builder: ((context, constraints) {
-          return Column(
-            children: [
-              Container(height: constraints.maxHeight * 0.2, child: FittedBox(child: Text("No Transaction added yet",style: TextStyle(color: Colors.black,),))),
-              SizedBox(
-                height: constraints.maxHeight * 0.1,
-              ),
-              Container(
-                  height: constraints.maxHeight * 0.7,
-                  child: Image.asset(
-                    "assets/images/waiting.png",
-                    fit: BoxFit.cover,
-                  ))
-            ],
-          );
-        })) 
+            return Column(
+              children: [
+                Container(
+                    height: constraints.maxHeight * 0.2,
+                    child: FittedBox(
+                        child: Text(
+                      "No Transaction added yet",
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ))),
+                SizedBox(
+                  height: constraints.maxHeight * 0.1,
+                ),
+                Container(
+                    height: constraints.maxHeight * 0.7,
+                    child: Image.asset(
+                      "assets/images/waiting.png",
+                      fit: BoxFit.cover,
+                    ))
+              ],
+            );
+          }))
         : ListView.builder(
             itemBuilder: (context, index) {
               return TransactionItem(_transactions[index], deleteHandler);
