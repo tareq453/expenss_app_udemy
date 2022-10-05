@@ -5,15 +5,15 @@ import 'package:flutter/material.dart';
 
 class TransactionItem extends StatelessWidget {
   final Transaction _transaction;
-  final Function(Transaction) deleteHandler;
-  TransactionItem(this._transaction, this.deleteHandler);
+  final Function(Transaction) _deleteHandler;
+  const TransactionItem(this._transaction, this._deleteHandler);
 
   @override
   Widget build(BuildContext context) {
     final _mediaQuery = MediaQuery.of(context);
     return Card(
       elevation: 6,
-      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
       child: ListTile(
         leading: CircleAvatar(
           radius: 30,
@@ -31,12 +31,12 @@ class TransactionItem extends StatelessWidget {
         trailing: _mediaQuery.size.width > 450
             ? TextButton.icon(
                 onPressed: _deleteTransaction,
-                icon: Icon(Icons.delete),
-                label: Text("Delete"),
+                icon: const Icon(Icons.delete),
+                label: const Text("Delete"),
                 style: TextButton.styleFrom(primary: Theme.of(context).errorColor),
               )
             : IconButton(
-                icon: Icon(Icons.delete),
+                icon: const Icon(Icons.delete),
                 color: Theme.of(context).errorColor,
                 onPressed: _deleteTransaction,
               ),
@@ -45,6 +45,6 @@ class TransactionItem extends StatelessWidget {
   }
 
   void _deleteTransaction() {
-    deleteHandler(_transaction);
+    _deleteHandler(_transaction);
   }
 }

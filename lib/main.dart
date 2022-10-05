@@ -100,35 +100,75 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  List<Widget> _buildLandscapeContent(
+      var deviceHeight, Widget transactionListWidget) {
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text("Show chart!", style: Theme.of(context).textTheme.bodyLarge),
+          Switch.adaptive(
+              activeColor: Theme.of(context).colorScheme.secondary,
+              value: _showChart,
+              onChanged: ((value) {
+                setState(() {
+                  _showChart = !_showChart;
+                });
+              }))
+        ],
+      ),
+      _showChart
+          ? Container(
+              height: deviceHeight * .7, child: Chart(_recenctTransaction))
+          : transactionListWidget
+    ];
+  }
+
+  List<Widget> _buildPortirateContent(
+      var deviceHeight, Widget transactionListWidget) {
+    return [
+      Container(height: deviceHeight * .3, child: Chart(_recenctTransaction)),
+      transactionListWidget
+    ];
+  }
+
+  CupertinoNavigationBar _buildCupetinoAppBar() {
+    return CupertinoNavigationBar(
+      middle: Text("Expense App"),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          GestureDetector(
+            child: Icon(CupertinoIcons.add),
+            onTap: () {
+              _startNewTransaction(context);
+            },
+          )
+        ],
+      ),
+    );
+  }
+
+  AppBar _buildMaterialAppBar() {
+    return AppBar(
+      title: Text("Expense App"),
+      actions: [
+        IconButton(
+            onPressed: () {
+              _startNewTransaction(context);
+            },
+            icon: Icon(Icons.add))
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     print("main page rebuild");
     final _mediaQuery = MediaQuery.of(context);
     final PreferredSizeWidget appBar = Platform.isIOS
-        ? CupertinoNavigationBar(
-            middle: Text("Expense App"),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                GestureDetector(
-                  child: Icon(CupertinoIcons.add),
-                  onTap: () {
-                    _startNewTransaction(context);
-                  },
-                )
-              ],
-            ),
-          )
-        : AppBar(
-            title: Text("Expense App"),
-            actions: [
-              IconButton(
-                  onPressed: () {
-                    _startNewTransaction(context);
-                  },
-                  icon: Icon(Icons.add))
-            ],
-          ) as PreferredSizeWidget;
+        ? _buildCupetinoAppBar()
+        : _buildMaterialAppBar() as PreferredSizeWidget;
     final deviceHeight = _mediaQuery.size.height -
         appBar.preferredSize.height -
         _mediaQuery.padding.top;
@@ -143,30 +183,9 @@ class _MyHomePageState extends State<MyHomePage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           if (_isLandscape)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("Show chart!",style: Theme.of(context).textTheme.bodyLarge),
-                Switch.adaptive(
-                    activeColor: Theme.of(context).colorScheme.secondary,
-                    value: _showChart,
-                    onChanged: ((value) {
-                      setState(() {
-                        _showChart = !_showChart;
-                      });
-                    }))
-              ],
-            ),
+            ..._buildLandscapeContent(deviceHeight, _transactionListWidget),
           if (!_isLandscape)
-            Container(
-                height: deviceHeight * .3, child: Chart(_recenctTransaction)),
-          if (!_isLandscape) _transactionListWidget,
-          if (_isLandscape)
-            _showChart
-                ? Container(
-                    height: deviceHeight * .7,
-                    child: Chart(_recenctTransaction))
-                : _transactionListWidget
+            ..._buildPortirateContent(deviceHeight, _transactionListWidget)
         ],
       ),
     ));
