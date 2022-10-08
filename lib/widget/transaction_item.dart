@@ -1,13 +1,33 @@
+import 'dart:math';
+
 import 'package:intl/intl.dart';
 
 import '../models/transaction.dart';
 import 'package:flutter/material.dart';
 
-class TransactionItem extends StatelessWidget {
-  final Transaction _transaction;
-  final Function(Transaction) _deleteHandler;
-  const TransactionItem(this._transaction, this._deleteHandler);
+class TransactionItem extends StatefulWidget {
+  final Transaction transaction;
+  final Function(Transaction) deleteHandler;
+  const TransactionItem({Key? key,required this.transaction,required this.deleteHandler}) : super(key: key);
 
+  @override
+  State<TransactionItem> createState() => _TransactionItemState();
+}
+
+class _TransactionItemState extends State<TransactionItem> {
+Color? _bgColor;
+
+@override
+  void initState() {
+    List<Color> colorList = [
+      Colors.red,
+      Colors.white,
+      Colors.pink,
+      Colors.yellow
+    ];
+    _bgColor = colorList[Random().nextInt(4)];
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     final _mediaQuery = MediaQuery.of(context);
@@ -16,17 +36,18 @@ class TransactionItem extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
       child: ListTile(
         leading: CircleAvatar(
+          backgroundColor: _bgColor,
           radius: 30,
           child: Padding(
             padding: const EdgeInsets.all(5),
             child: FittedBox(
-                child: Text("\$${_transaction.amount.toStringAsFixed(2)}")),
+                child: Text("\$${widget.transaction.amount.toStringAsFixed(2)}")),
           ),
         ),
-        title: Text(_transaction.title,
+        title: Text(widget.transaction.title,
             style: Theme.of(context).textTheme.headline6),
         subtitle: Text(
-          DateFormat.yMMMd().format(_transaction.date),
+          DateFormat.yMMMd().format(widget.transaction.date),
         ),
         trailing: _mediaQuery.size.width > 450
             ? TextButton.icon(
@@ -45,6 +66,6 @@ class TransactionItem extends StatelessWidget {
   }
 
   void _deleteTransaction() {
-    _deleteHandler(_transaction);
+    widget.deleteHandler(widget.transaction);
   }
 }

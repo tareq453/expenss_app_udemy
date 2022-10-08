@@ -58,10 +58,29 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   final List<Transaction> _transactions = [];
 
   bool _showChart = true;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addObserver(this);
+    print("initState main dart");
+    super.initState();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print("state is $state");
+    super.didChangeAppLifecycleState(state);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
 
   List<Transaction> get _recenctTransaction {
     return _transactions.where((transaction) {
@@ -175,7 +194,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final _isLandscape = _mediaQuery.orientation == Orientation.landscape;
     final _transactionListWidget = Container(
         height: deviceHeight * 0.7,
-        child: TransactionList(_transactions, _deleteTransaction));
+        child: TransactionList(transactions: _transactions,deleteHandler: _deleteTransaction,));
 
     final appBody = SafeArea(
         child: SingleChildScrollView(
